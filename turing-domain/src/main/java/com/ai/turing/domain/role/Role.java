@@ -18,6 +18,11 @@ import org.springframework.ai.chat.prompt.Prompt;
 public interface Role {
 
     /**
+     * 会话ID
+     */
+    String getConversationId();
+
+    /**
      * 角色类型
      * @return 角色类型
      */

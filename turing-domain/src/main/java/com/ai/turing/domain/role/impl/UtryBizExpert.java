@@ -21,6 +21,11 @@ import org.springframework.stereotype.Component;
 public class UtryBizExpert implements Role {
 
     @Override
+    public String getConversationId() {
+        return this.getType().getRoleCode();
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.UTRY_BIZ_EXPERT;
     }

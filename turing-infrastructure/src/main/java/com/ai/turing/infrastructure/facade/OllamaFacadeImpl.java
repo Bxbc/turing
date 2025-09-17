@@ -4,8 +4,10 @@ import com.ai.turing.domain.facade.OllamaFacade;
 import com.ai.turing.domain.role.Role;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+
 
 /**
  * <p>
@@ -27,11 +29,15 @@ public class OllamaFacadeImpl implements OllamaFacade {
 
     @Override
     public String chat(Role role, String question) {
-        return ollamaChatClient.prompt(role.getPrompt()).user(question).call().content();
+        return ollamaChatClient.prompt(role.getPrompt()).user(question).advisors(
+                advisor -> advisor.param(ChatMemory.CONVERSATION_ID, role.getConversationId())
+        ).call().content();
     }
 
     @Override
     public Flux<String> streamChat(Role role, String question) {
-        return ollamaChatClient.prompt(role.getPrompt()).user( question).stream().content();
+        return ollamaChatClient.prompt(role.getPrompt()).user( question).advisors(
+                advisor -> advisor.param(ChatMemory.CONVERSATION_ID, role.getConversationId())
+        ).stream().content();
     }
 }

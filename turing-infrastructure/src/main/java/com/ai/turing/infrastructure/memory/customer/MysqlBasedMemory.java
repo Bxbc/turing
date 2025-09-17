@@ -1,4 +1,4 @@
-package com.ai.turing.infrastructure.memory;
+package com.ai.turing.infrastructure.memory.customer;
 
 import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
 import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;

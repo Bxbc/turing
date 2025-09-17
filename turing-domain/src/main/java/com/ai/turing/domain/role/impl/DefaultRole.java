@@ -21,6 +21,11 @@ import org.springframework.stereotype.Component;
 public class DefaultRole implements Role {
 
     @Override
+    public String getConversationId() {
+        return getType().getRoleCode();
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.DEFAULT;
     }
