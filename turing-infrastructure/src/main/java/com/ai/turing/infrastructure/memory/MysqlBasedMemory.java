@@ -1,10 +1,15 @@
 package com.ai.turing.infrastructure.memory;
 
+import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
+import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.MessageType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -22,24 +27,42 @@ import java.util.List;
 @AllArgsConstructor
 public class MysqlBasedMemory implements ChatMemoryRepository {
 
+    private final TuringMemoryMapper turingMemoryMapper;
 
     @Override
     public List<String> findConversationIds() {
-        return List.of();
+        return turingMemoryMapper.findConversationIds();
     }
 
     @Override
     public List<Message> findByConversationId(@NonNull String conversationId) {
-        return List.of();
+        QueryWrapper<TuringMemoryDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(TuringMemoryDO::getConversationId, conversationId)
+                .orderByDesc(TuringMemoryDO::getGmtCreate);
+        List<TuringMemoryDO> turingMemoryDOS = turingMemoryMapper.selectList(queryWrapper);
+        return turingMemoryDOS.stream().map(TuringMemoryDO::toMessage).toList();
     }
 
     @Override
     public void saveAll(@NonNull String conversationId, @NonNull List<Message> messages) {
+        List<TuringMemoryDO> turingMemoryDOS = messages.stream().filter(message -> !MessageType.TOOL.equals(message.getMessageType())).map(
+                message -> {
+                    TuringMemoryDO turingMemoryDO = new TuringMemoryDO();
+                    turingMemoryDO.setConversationId(conversationId);
+                    turingMemoryDO.setContent(message.getText());
+                    turingMemoryDO.setType(message.getMessageType());
+                    turingMemoryDO.setGmtCreate(LocalDate.now());
 
+                    return turingMemoryDO;
+                }).toList();
+        turingMemoryMapper.insert(turingMemoryDOS);
     }
+
 
     @Override
     public void deleteByConversationId(@NonNull String conversationId) {
-
+        QueryWrapper<TuringMemoryDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(TuringMemoryDO::getConversationId, conversationId);
+        turingMemoryMapper.delete(queryWrapper);
     }
 }

@@ -3,6 +3,9 @@ package com.ai.turing.infrastructure.dao.base.memory.mapper;
 import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +21,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface TuringMemoryMapper extends BaseMapper<TuringMemoryDO> {
+
+    @Select("select distinct conversation_id from `turing_memory`")
+    List<String> findConversationIds();
 }
