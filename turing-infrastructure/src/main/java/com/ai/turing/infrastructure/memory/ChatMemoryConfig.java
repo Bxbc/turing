@@ -2,6 +2,7 @@ package com.ai.turing.infrastructure.memory;
 
 import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
 import com.ai.turing.infrastructure.memory.customer.MysqlBasedMemory;
+import jakarta.annotation.Resource;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ChatMemoryConfig {
 
-    @Mapper
+    @Resource
     private TuringMemoryMapper turingMemoryMapper;
 
     @Bean(name = "messageWindowChatMemory")
