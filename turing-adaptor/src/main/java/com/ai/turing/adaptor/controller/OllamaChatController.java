@@ -1,5 +1,7 @@
 package com.ai.turing.adaptor.controller;
 
+import com.ai.turing.domain.common.error.enums.CommonError;
+import com.ai.turing.domain.common.result.TResult;
 import com.ai.turing.domain.facade.OllamaFacade;
 import com.ai.turing.domain.role.Role;
 import com.ai.turing.domain.role.enums.RoleType;
@@ -32,13 +34,13 @@ public class OllamaChatController {
     private OllamaFacade ollamaFacade;
 
     @GetMapping("/chat")
-    public String chat(@RequestParam(value = "roleCode", required = false) String roleCode,
-                       @RequestParam(value = "question", required = false) String question) {
+    public TResult<String> chat(@RequestParam(value = "roleCode", required = false) String roleCode,
+                        @RequestParam(value = "question", required = false) String question) {
         RoleType roleType = RoleType.getOrDefault(roleCode);
         Optional<Role> roleOp = RoleFactory.getRole(roleType);
         if(roleOp.isEmpty()) {
-            return "角色不存在";
+            return TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid");
         }
-        return ollamaFacade.chat(roleOp.get(), question);
+        return TResult.success(ollamaFacade.chat(roleOp.get(), question));
     }
 }

@@ -1,5 +1,7 @@
 package com.ai.turing.domain.common.result;
 
+import com.ai.turing.domain.common.error.TError;
+import com.ai.turing.domain.common.error.TException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -52,51 +54,51 @@ public class TResult<T> implements Serializable {
 
     public static <T> TResult<T> success(T data) {
 
-        TResult<T> vResult = new TResult<>();
+        TResult<T> tResult = new TResult<>();
 
-        vResult.setData(data);
-        vResult.setSuccess(true);
+        tResult.setData(data);
+        tResult.setSuccess(true);
 
-        return vResult;
+        return tResult;
     }
 
     public static <T> TResult<T> fail(String code, String errorMsg, String toastMsg) {
 
-        TResult<T> vResult = new TResult<>();
+        TResult<T> tResult = new TResult<>();
 
-        vResult.setCode(code);
-        vResult.setErrorMsg(errorMsg);
-        vResult.setToastMsg(toastMsg);
-        vResult.setSuccess(false);
+        tResult.setCode(code);
+        tResult.setErrorMsg(errorMsg);
+        tResult.setToastMsg(toastMsg);
+        tResult.setSuccess(false);
 
-        return vResult;
+        return tResult;
     }
 
-    public static <T> TResult<T> fail(VError error) {
+    public static <T> TResult<T> fail(TError error) {
 
-        TResult<T> vResult = new TResult<>();
+        TResult<T> tResult = new TResult<>();
 
-        vResult.setSuccess(false);
-        vResult.setCode(error.getCode());
-        vResult.setErrorMsg(error.getErrorMsg());
-        vResult.setToastMsg(error.getToastMsg());
+        tResult.setSuccess(false);
+        tResult.setCode(error.getCode());
+        tResult.setErrorMsg(error.getErrorMsg());
+        tResult.setToastMsg(error.getToastMsg());
 
-        return vResult;
+        return tResult;
     }
 
-    public static <T> TResult<T> fail(VError error, String toastMsg) {
+    public static <T> TResult<T> fail(TError error, String toastMsg) {
 
-        TResult<T> vResult = new VResult<>();
+        TResult<T> tResult = new TResult<>();
 
-        vResult.setSuccess(false);
-        vResult.setCode(error.getCode());
-        vResult.setErrorMsg(error.getErrorMsg());
-        vResult.setToastMsg(toastMsg);
+        tResult.setSuccess(false);
+        tResult.setCode(error.getCode());
+        tResult.setErrorMsg(error.getErrorMsg());
+        tResult.setToastMsg(toastMsg);
 
-        return vResult;
+        return tResult;
     }
 
-    public static <T> TResult<T> fail(VException e) {
-        return fail(e.getVError(), e.getToastMsg());
+    public static <T> TResult<T> fail(TException e) {
+        return fail(e.getError(), e.getToastMsg());
     }
 }
