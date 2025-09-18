@@ -5,12 +5,15 @@ import com.ai.turing.infrastructure.dao.turing.memory.model.TuringMemoryDO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.MessageType;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -45,7 +48,13 @@ public class MysqlBasedMemory implements ChatMemoryRepository {
 
     @Override
     public void saveAll(@NonNull String conversationId, @NonNull List<Message> messages) {
-        List<TuringMemoryDO> turingMemoryDOS = messages.stream().filter(message -> MessageType.USER.equals(message.getMessageType())).map(
+
+        // 每次都按照内容去重
+        if(CollectionUtils.isEmpty(messages)) {
+            return;
+        }
+        Map<String, Message> messageMap = messages.stream().collect(Collectors.toMap(Message::getText, message -> message, (v1, v2) -> v1));
+        List<TuringMemoryDO> turingMemoryDOS = messageMap.values().stream().filter(message -> MessageType.USER.equals(message.getMessageType())).map(
                 message -> {
                     TuringMemoryDO turingMemoryDO = new TuringMemoryDO();
                     turingMemoryDO.setConversationId(conversationId);
