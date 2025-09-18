@@ -8,10 +8,7 @@ import com.ai.turing.domain.role.enums.RoleType;
 import com.ai.turing.domain.role.factory.RoleFactory;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -34,20 +31,20 @@ public class OllamaChatController {
     @Resource
     private OllamaFacade ollamaFacade;
 
-    @GetMapping("/chat")
+    @PostMapping("/chat")
     public TResult<String> chat(@RequestParam(value = "roleCode", required = false) String roleCode,
-                        @RequestParam(value = "question", required = false) String question) {
+                        @RequestBody String questionContent) {
         RoleType roleType = RoleType.getOrDefault(roleCode);
         Optional<Role> roleOp = RoleFactory.getRole(roleType);
-        return roleOp.map(role -> TResult.success(ollamaFacade.chat(role, question))).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
+        return roleOp.map(role -> TResult.success(ollamaFacade.chat(role, questionContent))).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
     }
 
-    @GetMapping("/streamChat")
+    @PostMapping("/streamChat")
     public TResult<String> streamChat(HttpServletResponse response,  @RequestParam(value = "roleCode", required = false) String roleCode,
-                                      @RequestParam(value = "question", required = false) String question) {
+                                      @RequestBody String questionContent) {
         response.setCharacterEncoding("UTF-8");
         RoleType roleType = RoleType.getOrDefault(roleCode);
         Optional<Role> roleOp = RoleFactory.getRole(roleType);
-        return roleOp.map(role -> TResult.success(ollamaFacade.streamChat(role, question).blockFirst())).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
+        return roleOp.map(role -> TResult.success(ollamaFacade.streamChat(role, questionContent).blockFirst())).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
     }
 }

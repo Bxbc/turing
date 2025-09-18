@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class UtryBizExpert implements Role {
+public class DigitalAvatar implements Role {
 
     @Override
     public String getConversationId() {
@@ -27,7 +27,7 @@ public class UtryBizExpert implements Role {
 
     @Override
     public RoleType getType() {
-        return RoleType.UTRY_BIZ_EXPERT;
+        return RoleType.DIGITAL_AVATAR;
     }
 
     @Override

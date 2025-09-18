@@ -19,7 +19,7 @@ import lombok.Getter;
 @Getter
 public enum RoleType {
 
-    UTRY_BIZ_EXPERT("utry_biz_expert", "天猫U先业务的专家"),
+    DIGITAL_AVATAR("digital_avatar", "数字分身"),
 
     DEFAULT("default", "默认角色"),
     ;
