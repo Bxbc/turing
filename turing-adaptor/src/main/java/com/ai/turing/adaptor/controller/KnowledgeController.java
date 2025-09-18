@@ -1,6 +1,17 @@
 package com.ai.turing.adaptor.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.ai.turing.adaptor.controller.dto.AvailableFileTypeDTO;
+import com.ai.turing.domain.common.result.TResult;
+import com.ai.turing.domain.document.DocumentService;
+import com.ai.turing.domain.document.enums.FileTypeEnum;
+import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
+import org.springframework.ai.document.Document;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -14,7 +25,29 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 
-@RestController("/knowledge")
+@RestController
+@RequestMapping("/knowledge")
 public class KnowledgeController {
 
+    @Resource
+    private DocumentService documentService;
+
+    @PostMapping("/file/upload")
+    @SneakyThrows
+    public TResult<Void> uploadFile(@RequestParam MultipartFile file) {
+
+        List<Document> readResult = documentService.read(file);
+        documentService.save(readResult);
+
+        return TResult.success(null);
+    }
+
+
+    @GetMapping("/file/type/available")
+    public TResult<List<AvailableFileTypeDTO>> listAvailableFileType() {
+        List<AvailableFileTypeDTO> availableFileTypeDTOS = Arrays.stream(FileTypeEnum.values())
+                .map(fileTypeEnum -> AvailableFileTypeDTO.builder().code(fileTypeEnum.getCode()).name(fileTypeEnum.getDesc()).build())
+                .toList();
+        return TResult.success(availableFileTypeDTOS);
+    }
 }
