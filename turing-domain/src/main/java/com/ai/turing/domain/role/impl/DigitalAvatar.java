@@ -33,8 +33,8 @@ public class DigitalAvatar implements Role {
     @Override
     public Prompt getPrompt() {
         Prompt prompt = new Prompt();
-        prompt.augmentSystemMessage("隐藏思考和推理过程");
-        prompt.augmentUserMessage("你是一个天猫U先业务专家，请根据用户问题给出最合适的答案。");
+        prompt.augmentSystemMessage("你不需要将思考过程和内容展示出来，直接返回答案");
+        prompt.augmentSystemMessage("你是一个风桐的数字分身，基于已经获取的知识和对话记忆，你可以辅助回答问题");
         return prompt;
     }
 }

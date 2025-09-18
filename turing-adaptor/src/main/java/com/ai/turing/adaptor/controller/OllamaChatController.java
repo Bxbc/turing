@@ -1,5 +1,7 @@
 package com.ai.turing.adaptor.controller;
 
+import com.ai.turing.adaptor.controller.request.ChatRequest;
+import com.ai.turing.domain.common.asserts.TAsserts;
 import com.ai.turing.domain.common.error.enums.CommonError;
 import com.ai.turing.domain.common.result.TResult;
 import com.ai.turing.domain.facade.OllamaFacade;
@@ -9,6 +11,7 @@ import com.ai.turing.domain.role.factory.RoleFactory;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.Optional;
 
@@ -32,19 +35,25 @@ public class OllamaChatController {
     private OllamaFacade ollamaFacade;
 
     @PostMapping("/chat")
-    public TResult<String> chat(@RequestParam(value = "roleCode", required = false) String roleCode,
-                        @RequestBody String questionContent) {
-        RoleType roleType = RoleType.getOrDefault(roleCode);
+    public TResult<String> chat(@RequestBody ChatRequest chatRequest) {
+
+        TAsserts.notBlank(chatRequest.getRoleCode(), "角色不能为空");
+        TAsserts.notBlank(chatRequest.getQuestionContent(), "问题不能为空");
+        RoleType roleType = RoleType.getOrDefault(chatRequest.getRoleCode());
         Optional<Role> roleOp = RoleFactory.getRole(roleType);
-        return roleOp.map(role -> TResult.success(ollamaFacade.chat(role, questionContent))).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
+        return roleOp.map(role -> TResult.success(ollamaFacade.chat(role, chatRequest.getQuestionContent()))).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
     }
 
     @PostMapping("/streamChat")
-    public TResult<String> streamChat(HttpServletResponse response,  @RequestParam(value = "roleCode", required = false) String roleCode,
-                                      @RequestBody String questionContent) {
+    public TResult<Flux<String>> streamChat(HttpServletResponse response,
+                                           @RequestBody ChatRequest chatRequest) {
         response.setCharacterEncoding("UTF-8");
-        RoleType roleType = RoleType.getOrDefault(roleCode);
+
+        TAsserts.notBlank(chatRequest.getRoleCode(), "角色不能为空");
+        TAsserts.notBlank(chatRequest.getQuestionContent(), "问题不能为空");
+
+        RoleType roleType = RoleType.getOrDefault(chatRequest.getRoleCode());
         Optional<Role> roleOp = RoleFactory.getRole(roleType);
-        return roleOp.map(role -> TResult.success(ollamaFacade.streamChat(role, questionContent).blockFirst())).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
+        return roleOp.map(role -> TResult.success(ollamaFacade.streamChat(role, chatRequest.getQuestionContent()))).orElseGet(() -> TResult.fail(CommonError.PARAM_ERROR, "roleCode is invalid"));
     }
 }

@@ -1,11 +1,13 @@
 package com.ai.turing.adaptor.controller;
 
 import com.ai.turing.adaptor.controller.dto.AvailableFileTypeDTO;
+import com.ai.turing.domain.common.asserts.TAsserts;
 import com.ai.turing.domain.common.result.TResult;
 import com.ai.turing.domain.document.DocumentService;
 import com.ai.turing.domain.document.enums.FileTypeEnum;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.document.Document;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +33,14 @@ public class KnowledgeController {
 
     @Resource
     private DocumentService documentService;
+
+    @PostMapping("/input")
+    public TResult<Void> input(@RequestBody String input) {
+        TAsserts.notBlank(input, "输入不能为空");
+        Document document = new Document( input);
+        documentService.save(List.of(document));
+        return TResult.success(null);
+    }
 
     @PostMapping("/file/upload")
     @SneakyThrows
