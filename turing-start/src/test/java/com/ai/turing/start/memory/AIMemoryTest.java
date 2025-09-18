@@ -1,7 +1,7 @@
 package com.ai.turing.start.memory;
 
-import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
-import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;
+import com.ai.turing.infrastructure.dao.turing.memory.mapper.TuringMemoryMapper;
+import com.ai.turing.infrastructure.dao.turing.memory.model.TuringMemoryDO;
 import com.ai.turing.start.TuringStartApplication;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;

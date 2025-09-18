@@ -1,4 +1,4 @@
-package com.ai.turing.infrastructure.dao.base.memory.model;
+package com.ai.turing.infrastructure.dao.turing.memory.model;
 
 import com.ai.turing.domain.common.error.TException;
 import com.ai.turing.domain.common.error.enums.CommonError;

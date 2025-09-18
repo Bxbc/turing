@@ -1,6 +1,6 @@
-package com.ai.turing.infrastructure.dao.base.memory.mapper;
+package com.ai.turing.infrastructure.dao.turing.memory.mapper;
 
-import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;
+import com.ai.turing.infrastructure.dao.turing.memory.model.TuringMemoryDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

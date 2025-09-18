@@ -1,7 +1,7 @@
 package com.ai.turing.infrastructure.memory.customer;
 
-import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
-import com.ai.turing.infrastructure.dao.base.memory.model.TuringMemoryDO;
+import com.ai.turing.infrastructure.dao.turing.memory.mapper.TuringMemoryMapper;
+import com.ai.turing.infrastructure.dao.turing.memory.model.TuringMemoryDO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

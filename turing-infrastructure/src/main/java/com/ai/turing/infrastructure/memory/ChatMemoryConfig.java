@@ -1,6 +1,6 @@
 package com.ai.turing.infrastructure.memory;
 
-import com.ai.turing.infrastructure.dao.base.memory.mapper.TuringMemoryMapper;
+import com.ai.turing.infrastructure.dao.turing.memory.mapper.TuringMemoryMapper;
 import com.ai.turing.infrastructure.memory.customer.MysqlBasedMemory;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
