@@ -45,7 +45,7 @@ public class MysqlBasedMemory implements ChatMemoryRepository {
 
     @Override
     public void saveAll(@NonNull String conversationId, @NonNull List<Message> messages) {
-        List<TuringMemoryDO> turingMemoryDOS = messages.stream().filter(message -> !MessageType.TOOL.equals(message.getMessageType())).map(
+        List<TuringMemoryDO> turingMemoryDOS = messages.stream().filter(message -> MessageType.USER.equals(message.getMessageType())).map(
                 message -> {
                     TuringMemoryDO turingMemoryDO = new TuringMemoryDO();
                     turingMemoryDO.setConversationId(conversationId);

@@ -4,7 +4,10 @@ import com.ai.turing.domain.facade.OllamaFacade;
 import com.ai.turing.domain.role.Role;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -27,17 +30,36 @@ public class OllamaFacadeImpl implements OllamaFacade {
     @Resource(name = "ollamaChatClient")
     private ChatClient ollamaChatClient;
 
+    @Resource
+    private VectorStore vectorStore;
+
     @Override
     public String chat(Role role, String question) {
+        QuestionAnswerAdvisor questionAnswerAdvisor = this.assembleRAG(question);
         return ollamaChatClient.prompt(role.getPrompt()).user(question).advisors(
                 advisor -> advisor.param(ChatMemory.CONVERSATION_ID, role.getConversationId())
+                        .advisors(questionAnswerAdvisor)
         ).call().content();
     }
 
     @Override
     public Flux<String> streamChat(Role role, String question) {
-        return ollamaChatClient.prompt(role.getPrompt()).user( question).advisors(
+        QuestionAnswerAdvisor questionAnswerAdvisor = this.assembleRAG(question);
+        return ollamaChatClient.prompt(role.getPrompt()).user(question).advisors(
                 advisor -> advisor.param(ChatMemory.CONVERSATION_ID, role.getConversationId())
+                        .advisors(questionAnswerAdvisor)
         ).stream().content();
+    }
+
+    private QuestionAnswerAdvisor assembleRAG(String question) {
+        return QuestionAnswerAdvisor.builder(vectorStore)
+                .searchRequest(
+                        SearchRequest.builder()
+                                .query(question)
+                                .topK(5)
+                                .similarityThreshold(0.7)
+                                .build()
+                )
+                .build();
     }
 }
