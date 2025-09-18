@@ -1,10 +1,12 @@
 package com.ai.turing.infrastructure.dao.knowledge.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -33,8 +35,7 @@ public class BasePostgresqlConfig {
     private String DRIVER_CLASS_NAME;
 
     @Bean(name = "knowledgeDatasource")
-    @Primary
-    public DataSource turingDatasource() {
+    public DataSource knowledgeDatasource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername(USER_NAME);
         dataSource.setUrl(URL);
@@ -44,5 +45,10 @@ public class BasePostgresqlConfig {
         dataSource.setTestWhileIdle( true);
 
         return dataSource;
+    }
+
+    @Bean(name = "knowledgeJdbcTemplate")
+    public JdbcTemplate knowledgeJdbcTemplate(@Qualifier("knowledgeDatasource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 }
