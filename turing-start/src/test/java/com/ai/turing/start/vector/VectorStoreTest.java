@@ -41,6 +41,6 @@ public class VectorStoreTest {
                         .topK(5)
                         .build()
         );
-        Assert.notEmpty(documents, "vector store && search fail");
+        Assert.notEmpty(documentsResult, "vector store && search fail");
     }
 }
